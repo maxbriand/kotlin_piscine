@@ -16,31 +16,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.ex01.ui.theme.Ex01Theme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DisplayTextAndButton(
-                        name = "Android",
-                        modifier = Modifier.padding(16.dp),
-                        from = "Barnabe",
-                    )
+            Ex01Theme {
+                DisplayTextAndButton(
+                    name = "A simple text",
+                    modifier = Modifier.padding(16.dp),
+                    buttonName = "Click me",
+                )
             }
         }
     }
 }
 
 @Composable
-fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, from: String) {
+fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, buttonName: String) {
+    var currentState by remember { mutableStateOf("A simple text") }
 
     Column(
         modifier = Modifier
@@ -49,23 +57,29 @@ fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, from: Stri
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = "Meraba Ed!",
+            text = currentState,
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.fillMaxWidth(1f),
             textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.size(10.dp))
         Button(
-            onClick = { Log.d("App", "Button pressed") },
+            onClick = {
+                Log.d("App", "Button pressed")
+                if (currentState == "A simple text")
+                    currentState = "Hello World"
+                else
+                    currentState = "A simple text"
+            },
             modifier = Modifier.size(width = 120.dp, height = 40.dp)
-        ) { Text("Click me", style = MaterialTheme.typography.bodySmall) }
+        ) { Text(buttonName, style = MaterialTheme.typography.bodySmall) }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DisplayTextAndButtonPreview() {
-
-        DisplayTextAndButton("Android", from = "jdjd")
+    Ex01Theme {
+        DisplayTextAndButton("Android", buttonName = "jdjd")
+    }
 }
