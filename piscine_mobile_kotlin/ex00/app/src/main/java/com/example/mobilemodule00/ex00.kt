@@ -30,20 +30,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MobileModule00Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DisplayTextAndButton(
-                        name = "Android",
-                        modifier = Modifier.padding(16.dp),
-                        from = "Barnabe",
-                    )
-                }
+                DisplayTextAndButton(
+                    name = "A simple text",
+                    modifier = Modifier.padding(16.dp),
+                    buttonName = "Click me",
+                )
             }
         }
     }
 }
 
 @Composable
-fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, from: String) {
+fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, buttonName: String) {
 
     Column(
         modifier = Modifier
@@ -52,7 +50,7 @@ fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, from: Stri
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = "Meraba Ed!",
+            text = name,
             style = MaterialTheme.typography.headlineLarge,
             modifier = Modifier.fillMaxWidth(1f),
             textAlign = TextAlign.Center,
@@ -61,17 +59,14 @@ fun DisplayTextAndButton(name: String, modifier: Modifier = Modifier, from: Stri
         Button(
             onClick = { Log.d("App", "Button pressed") },
             modifier = Modifier.size(width = 120.dp, height = 40.dp)
-        ) { Text("Click me", style = MaterialTheme.typography.bodySmall) }
+        ) { Text(buttonName, style = MaterialTheme.typography.bodySmall) }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DisplayTextAndButtonPreview() {
     MobileModule00Theme {
-        DisplayTextAndButton("Android", from = "jdjd")
+        DisplayTextAndButton("Android", buttonName = "jdjd")
     }
 }
-
-
