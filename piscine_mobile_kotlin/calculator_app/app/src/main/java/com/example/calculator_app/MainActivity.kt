@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -43,10 +42,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Calculator_appTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android", modifier = Modifier.padding(innerPadding)
-                    )
+                @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                ) { _ ->
+                    Greeting()
                 }
             }
         }
@@ -55,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting() {
     var calculatorInput by remember { mutableStateOf("0") }
     var result by remember { mutableStateOf("0") }
 
@@ -85,7 +85,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 disabledTextColor = Color(0xFF607D8B),
             ),
         )
-        Log.d("Text Field 1", "Blop")
         TextField(
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
             value = result,
@@ -104,8 +103,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 disabledTextColor = Color(0xFF607D8B),
             )
         )
-        Log.d("Text Field 2", "Blop")
-        Keyboard(calculatorInput, { calculatorInput = it }, result, { result = it })
+        Keyboard(calculatorInput, { calculatorInput = it }, { result = it })
     }
 }
 
@@ -113,7 +111,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun Keyboard(
     calculatorInput: String,
     onChangeInput: (String) -> Unit,
-    result: String,
     onChangeResult: (String) -> Unit
 ) {
     val keyboards: List<String> = listOf(
@@ -157,11 +154,10 @@ fun Keyboard(
                             .weight(1f)
                             .fillMaxHeight(0.13f),
                         onClick = {
-                            behavior(
+                            keyBehavior(
                                 key = key,
                                 calculatorInput = calculatorInput,
                                 onChangeInput,
-                                result = result,
                                 onChangeResult = onChangeResult
                             )
                         },
@@ -172,7 +168,6 @@ fun Keyboard(
                         ),
                         shape = RectangleShape,
                     )
-                    Log.d("d", "n = $d")
                     i++
                     d++
                 }
@@ -189,15 +184,13 @@ private fun setKeyColor(i: Int, d: Int): Color = when {
     else -> Color.White
 }
 
-private fun behavior(
+private fun keyBehavior(
     key: String,
     calculatorInput: String,
     onChangeCalculatorInput: (String) -> Unit,
-    result: String,
     onChangeResult: (String) -> Unit
 ) {
     Log.d("Action: ", key)
-    Log.d("calculInput: ", calculatorInput)
     if (key == "AC") {
         onChangeCalculatorInput("0")
         onChangeResult("0")
@@ -208,8 +201,8 @@ private fun behavior(
         }
     } else if (key == "=") {
         try {
-            val x_removed = calculatorInput.replace("x", "*")
-            val total = evaluate(x_removed)
+            val xRemoved = calculatorInput.replace("x", "*")
+            val total = evaluate(xRemoved)
             val s1 = total.toString()
             onChangeResult(s1)
         } catch (e: Exception) {
@@ -221,7 +214,6 @@ private fun behavior(
         } else {
             onChangeCalculatorInput(calculatorInput + key)
         }
-        Log.d("the real value", "the value is $calculatorInput")
     }
 }
 
@@ -231,6 +223,6 @@ private fun evaluate(expr: String): Double = ExpressionBuilder(expr).build().eva
 @Composable
 fun GreetingPreview() {
     Calculator_appTheme {
-        Greeting("Android")
+        Greeting()
     }
 }
