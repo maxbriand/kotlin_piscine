@@ -34,6 +34,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.text.style.TextAlign
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxHeight
+import net.objecthunter.exp4j.ExpressionBuilder
 
 
 class MainActivity : ComponentActivity() {
@@ -84,6 +85,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 disabledTextColor = Color(0xFF607D8B),
             ),
         )
+        Log.d("Text Field 1", "Blop")
         TextField(
             textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.End),
             value = result,
@@ -102,13 +104,39 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 disabledTextColor = Color(0xFF607D8B),
             )
         )
-        Keyboard(calculatorInput, { calculatorInput = it })
+        Log.d("Text Field 2", "Blop")
+        Keyboard(calculatorInput, { calculatorInput = it }, result, { result = it })
     }
 }
 
 @Composable
-fun Keyboard(calculatorInput: String, onChangeInput: (String) -> Unit) {
-    val keyboards: List<String> = listOf("7", "8", "9", "C", "AC", "4", "5", "6", "+", "-", "1", "2", "3", "x", "/", "0", ".", "00", "=")
+fun Keyboard(
+    calculatorInput: String,
+    onChangeInput: (String) -> Unit,
+    result: String,
+    onChangeResult: (String) -> Unit
+) {
+    val keyboards: List<String> = listOf(
+        "7",
+        "8",
+        "9",
+        "C",
+        "AC",
+        "4",
+        "5",
+        "6",
+        "+",
+        "-",
+        "1",
+        "2",
+        "3",
+        "x",
+        "/",
+        "0",
+        ".",
+        "00",
+        "="
+    )
     var i = 0
     var d = 0
     var colorButton: Color
@@ -116,8 +144,7 @@ fun Keyboard(calculatorInput: String, onChangeInput: (String) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Bottom,
-
-        ) {
+    ) {
         while (true) {
             if (i >= 18) break
             Row(
@@ -129,7 +156,15 @@ fun Keyboard(calculatorInput: String, onChangeInput: (String) -> Unit) {
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxHeight(0.13f),
-                        onClick = { behavior(key = key, calculatorInput = calculatorInput) },
+                        onClick = {
+                            behavior(
+                                key = key,
+                                calculatorInput = calculatorInput,
+                                onChangeInput,
+                                result = result,
+                                onChangeResult = onChangeResult
+                            )
+                        },
                         content = { Text(key) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF607D8B),
@@ -149,29 +184,48 @@ fun Keyboard(calculatorInput: String, onChangeInput: (String) -> Unit) {
 }
 
 private fun setKeyColor(i: Int, d: Int): Color = when {
-
     d < 3 -> Color(0xFF37474F)
     d >= 3 && i < 5 -> Color(0xFF934247)
     else -> Color.White
 }
 
-private fun behavior(key: String, calculatorInput: String, onChangeCalculatorInput: ) {
+private fun behavior(
+    key: String,
+    calculatorInput: String,
+    onChangeCalculatorInput: (String) -> Unit,
+    result: String,
+    onChangeResult: (String) -> Unit
+) {
     Log.d("Action: ", key)
-//    if (key == "AC"){
-//
-//    }
-//    else if (key == "C"){
-//
-//    }
-//    else if (key == "=")
-//    {
-//
-//    }
-//    else {
-//
-//    }
+    Log.d("calculInput: ", calculatorInput)
+    if (key == "AC") {
+        onChangeCalculatorInput("0")
+        onChangeResult("0")
+    } else if (key == "C") {
+        if (calculatorInput.length > 1) (onChangeCalculatorInput(calculatorInput.dropLast(1)))
+        else if (calculatorInput != "0") {
+            onChangeCalculatorInput("0")
+        }
+    } else if (key == "=") {
+        try {
+            val x_removed = calculatorInput.replace("x", "*")
+            val total = evaluate(x_removed)
+            val s1 = total.toString()
+            onChangeResult(s1)
+        } catch (e: Exception) {
+            onChangeResult("Error")
+        }
+    } else {
+        if (calculatorInput == "0") {
+            onChangeCalculatorInput("" + key)
+        } else {
+            onChangeCalculatorInput(calculatorInput + key)
+        }
+        Log.d("the real value", "the value is $calculatorInput")
+    }
 }
 
+private fun evaluate(expr: String): Double = ExpressionBuilder(expr).build().evaluate()
 
 @Preview(showBackground = true)
 @Composable
