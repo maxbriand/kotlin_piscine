@@ -56,6 +56,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.navigation:navigation-compose:2.9.2")
+    implementation(platform(libs.navigation.bom))
+    implementation(libs.navigation.compose)
+    implementation(libs.navigation.ui)
+    implementation(libs.material.icons.core)
 
 }
