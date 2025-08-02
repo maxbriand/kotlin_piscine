@@ -56,9 +56,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(platform(libs.navigation.bom))
-    implementation(libs.navigation.compose)
-    implementation(libs.navigation.ui)
     implementation(libs.material.icons.core)
 
+    implementation(libs.androidx.nav.compose)
+    implementation(libs.androidx.nav.fragment)
+    implementation(libs.androidx.nav.ui)
+    implementation(libs.androidx.nav.dynamic.features.fragment)
+    implementation(libs.androidx.nav.testing)
+    implementation(libs.kotlinx.serialization.json)
 }

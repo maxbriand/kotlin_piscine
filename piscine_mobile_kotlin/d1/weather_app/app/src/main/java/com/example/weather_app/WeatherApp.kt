@@ -1,6 +1,7 @@
 package com.example.weather_app
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -19,17 +20,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHost
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.weather_app.ui.theme.Weather_appTheme
 import com.example.weather_app.screen.TodayScreen
-import androidx.navigation.compose.NavHost
 import com.example.weather_app.nav.Screen
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
+
 
 // your own nav‐graph and routes
 class MainActivity : ComponentActivity() {
@@ -47,7 +49,6 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Content(name: String, modifier: Modifier = Modifier) {
-    val navController = rememberNavController()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -63,15 +64,30 @@ fun Content(name: String, modifier: Modifier = Modifier) {
                 title = { Text("Weather") },
             )
         },
-        bottomBar = BottomBar { navController },
+        //bottomBar = //BottomBar {  },
     ) { innerPadding ->
-AppNavHost()
+        NavSystem()
 
 
     }
 }
 
+@Serializable
+object Profile
 
+@Serializable
+object FriendsList
+
+@Composable
+fun NavSystem() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = Profile) {
+        composable
+    }
+
+
+}
 
 
 @Preview(showBackground = true)
